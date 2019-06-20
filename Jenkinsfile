@@ -8,13 +8,13 @@ pipeline {
   }
   stages {
     stage('kubernetes-support') {
-      environment {
-        JENKINS_URL = param.jenkinsUrl.value
-        JENKINS_USER = param.jenkinsUser.userName
-        JENKINS_TOKEN = param.jenkinsUser.password
-      }
       steps {
-        echo env.JENKINS_URL
+        script {
+          env.JENKINS_URL = param.jenkinsUrl.value
+          env.JENKINS_USER = param.jenkinsUser.userName
+          env.JENKINS_TOKEN = param.jenkinsUser.password
+        }
+
         checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [],
             submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/alauda/alauda-kubernetes-support-plugin']]])
         sh 'mvn clean install -DskipTests && ./upload.sh alauda-kubernetes-support-plugin/target/alauda-kubernetes-support.hpi'
@@ -42,13 +42,13 @@ pipeline {
       }
     }
     stage('restart') {
-      environment {
-        JENKINS_URL = param.jenkinsUrl.value
-        JENKINS_USER = param.jenkinsUser.userName
-        JENKINS_TOKEN = param.jenkinsUser.password
-      }
       steps {
-          sh 'echo restart'
+        script {
+          env.JENKINS_URL = param.jenkinsUrl.value
+          env.JENKINS_USER = param.jenkinsUser.userName
+          env.JENKINS_TOKEN = param.jenkinsUser.password
+        }
+        sh 'echo restart'
       }
     }
   }
