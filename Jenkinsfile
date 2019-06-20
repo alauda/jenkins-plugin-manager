@@ -10,10 +10,10 @@ pipeline {
     stage('kubernetes-support') {
       steps {
         script {
-          withCredentials([string(credentialsId: param.jenkinsUrl, variable: 'jenkinsUrl')]) {
+          withCredentials([string(credentialsId: params.jenkinsUrl, variable: 'jenkinsUrl')]) {
             env.JENKINS_URL = "$jenkinsUrl"
           }
-          withCredentials([usernamePassword(credentialsId: param.jenkinsUrl.jenkinsUser, passwordVariable: 'password', usernameVariable: 'user')]) {
+          withCredentials([usernamePassword(credentialsId: params.jenkinsUrl.jenkinsUser, passwordVariable: 'password', usernameVariable: 'user')]) {
             env.JENKINS_USER = "$user"
             env.JENKINS_TOKEN = "$password"
           }
