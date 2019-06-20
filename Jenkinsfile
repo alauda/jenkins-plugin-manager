@@ -10,9 +10,13 @@ pipeline {
     stage('kubernetes-support') {
       steps {
         script {
-          env.JENKINS_URL = param.jenkinsUrl.value
-          env.JENKINS_USER = param.jenkinsUser.userName
-          env.JENKINS_TOKEN = param.jenkinsUser.password
+          withCredentials([string(credentialsId: param.jenkinsUrl, variable: 'jenkinsUrl')]) {
+            env.JENKINS_URL = "$jenkinsUrl"
+          }
+          withCredentials([usernamePassword(credentialsId: param.jenkinsUrl.jenkinsUser, passwordVariable: 'password', usernameVariable: 'user')]) {
+            env.JENKINS_USER = "$user"
+            env.JENKINS_TOKEN = "$password"
+          }
         }
 
         checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [],
@@ -43,11 +47,6 @@ pipeline {
     }
     stage('restart') {
       steps {
-        script {
-          env.JENKINS_URL = param.jenkinsUrl.value
-          env.JENKINS_USER = param.jenkinsUser.userName
-          env.JENKINS_TOKEN = param.jenkinsUser.password
-        }
         sh 'echo restart'
       }
     }
